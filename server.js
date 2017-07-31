@@ -56,8 +56,11 @@ app.get("/themes/:theme", function (req, res) {
 
 app.get("/api/questions/:theme", function (req, res) {
     var theme = req.params.theme;
-    mongoose.connect(url);
+    mongoose.connect(url,{
+        useMongoClient: true
+    });
     Questions.findOne({theme: theme}, function (err, questions) {
+
         mongoose.disconnect();
         if(err) return res.status(400).send();
 
@@ -66,7 +69,9 @@ app.get("/api/questions/:theme", function (req, res) {
 });
 
 app.get("/api/themes/", function (req, res) {
-    mongoose.connect(url);
+    mongoose.connect(url,{
+        useMongoClient: true
+    });
     Theme.find({}, function (err, themes) {
         mongoose.disconnect();
         if (err) return res.status(400).send();
