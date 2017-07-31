@@ -16,7 +16,12 @@ export default function questions(state = initialState, action) {
                 ...state, themes: action.payload.result.data
             };
         case CLICK_THEME:
+            var questions = document.getElementsByClassName("questionPage");
+            for(var i = 0; i<questions.length; i++){
+                questions[i].classList.remove("fail-answer");
+                questions[i].classList.remove("right-answer");
 
+            }
             return{
                 ...state, choice:true, theme:action.theme
             }
