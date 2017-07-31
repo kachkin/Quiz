@@ -7,10 +7,7 @@ import {browserHistory} from "react-router";
 
 const initialState = {
     questions: [],
-    choice: false,
-    right: 0,
-    fail: 0,
-    end: false
+    choice: false
 };
 
 export default function questions(state = initialState, action) {
@@ -19,9 +16,7 @@ export default function questions(state = initialState, action) {
         case GET_QUESTIONS_SUCCESS:
             return {
                 ...state,
-                questions: action.payload.result.data.questions,
-                right:0,
-                fail:0
+                questions: action.payload.result.data.questions
 
             };
         case CLICK_ANSWER:
@@ -30,22 +25,19 @@ export default function questions(state = initialState, action) {
                     for (let j = 0; j < state.questions[i].answers.length; j++) {
                         if (state.questions[i].answers[j].answer == action.payload.answer.innerHTML) {
                             if (state.questions[i].answers[j].value == true) {
-                                action.payload.question.parentNode.style.backgroundColor = "green";
-                                state.right++;
+                                action.payload.question.parentNode.classList.add("right-answer");
                             } else {
-                                action.payload.question.parentNode.style.backgroundColor = "red";
-                                state.fail++;
+                                action.payload.question.parentNode.classList.add("fail-answer");
                             }
-                            action.payload.question.parentNode.style.pointerEvents = "none";
                             break;
                         }
                     }
                     break;
                 }
             }
-            if (state.right + state.fail === state.questions.length) {
-                state.fail=0;
-                state.right=0;
+            if (document.getElementsByClassName("questionPage").length ===
+                (document.getElementsByClassName("fail-answer").length +
+                document.getElementsByClassName("fail-answer").length)) {
                 browserHistory.push("/result");
             }
             return {
