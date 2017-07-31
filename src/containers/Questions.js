@@ -8,18 +8,15 @@ import "../styles/App.less";
 
 class App extends Component {
 
-    constructor(props){
-        super(props);
-        this.props.questionsActions.getQuestions(this.props.location.pathname.split("/")[2])
-    }
-    shouldComponentUpdate(nextProps){
-
+   componentWillMount(){
+       this.props.questionsActions.getQuestions(this.props.params.theme)
+   }
+    /*componentDidUpdate(nextProps){
         if(nextProps.params.theme!==this.props.theme){
-            this.props.questionsActions.getQuestions(nextProps.location.pathname.split("/")[2]);
+            this.props.questionsActions.getQuestions(nextProps.params.theme);
         }
-        return true;
+    }*/
 
-    }
 
     render() {
         const {questions} = this.props;
