@@ -4,13 +4,11 @@ import "../styles/Question.less";
 
 export default class Question extends Component {
     onClickAnswer(e){
-        if(e.target.tagName == "SPAN"){
+        if(e.target.tagName === "SPAN"){
             var question = e.target.parentNode.parentNode.parentNode.firstChild;
             var answer = e.target;
             this.props.clickAnswer(question,answer)
         }
-
-
     }
 
     render() {
