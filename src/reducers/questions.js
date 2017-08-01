@@ -6,8 +6,11 @@ import {
 import {browserHistory} from "react-router";
 
 const initialState = {
+    theme:"",
     questions: [],
-    choice: false
+    choice: false,
+    right: 0,
+    fail: 0
 };
 
 export default function questions(state = initialState, action) {
@@ -16,7 +19,10 @@ export default function questions(state = initialState, action) {
         case GET_QUESTIONS_SUCCESS:
             return {
                 ...state,
-                questions: action.payload.result.data.questions
+                questions: action.payload.result.data.questions,
+                theme: action.payload.result.data.value,
+                right: 0,
+                fail: 0
 
             };
         case CLICK_ANSWER:
@@ -26,8 +32,10 @@ export default function questions(state = initialState, action) {
                         if (state.questions[i].answers[j].answer == action.payload.answer.innerHTML) {
                             if (state.questions[i].answers[j].value == true) {
                                 action.payload.question.parentNode.classList.add("right-answer");
+                                state.right++;
                             } else {
                                 action.payload.question.parentNode.classList.add("fail-answer");
+                                state.fail++;
                             }
                             break;
                         }
@@ -35,10 +43,8 @@ export default function questions(state = initialState, action) {
                     break;
                 }
             }
-            if (document.getElementsByClassName("questionPage").length ===
-                (document.getElementsByClassName("fail-answer").length +
-                document.getElementsByClassName("fail-answer").length)) {
-                browserHistory.push("/result");
+            if (state.right+state.fail===state.questions.length) {
+                browserHistory.push(`/themes/result`);
             }
             return {
                 ...state
