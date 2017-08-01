@@ -7,25 +7,37 @@ var mongoClient = require("mongodb").MongoClient;
 var mongoose = require("mongoose");
 var express = require("express");
 var bodyParser = require("body-parser");
-//var MongoStore = require("connect-mongo")(express);
+var session = require("express-session");
+var MongoStore = require("connect-mongo")(session);
 
 var app = express();
 var port = 3000;
+var url = "mongodb://localhost:27017/quiz";
 
 var compiler = webpack(config);
 app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: config.output.publicPath}))
 app.use(webpackHotMiddleware(compiler));
 app.use(bodyParser.json());
+app.use(session({
+    secret: "itsMyQuizProject",
+    saveUninitialized: false,
+    resave: false,
+    store: new MongoStore({
+        url: url,
+        touchAfter: 24 * 3600,
+        autoRemove: false
+    })
+}));
 
 mongoose.Promise = global.Promise;
 const Schema = mongoose.Schema;
 
-/*var userScheme = new Schema({
- firstName: String,
- lastName: String,
- login: String,
- password: String
- });*/
+var userScheme = new Schema({
+    firstName: String,
+    lastName: String,
+    login: String,
+    password: String
+});
 var themeScheme = new Schema({
     name: String,
     value: String
@@ -34,42 +46,45 @@ var themeScheme = new Schema({
 var questionScheme = new Schema({
     theme: String,
     value: String,
-    questions:Array
+    questions: Array
 });
 
 
 var Theme = mongoose.model("Theme", themeScheme);
 var Questions = mongoose.model("Questions", questionScheme);
-
-
-var url = "mongodb://localhost:27017/quiz";
+var User = mongoose.model("User", userScheme);
 
 
 app.get("/", function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-
-app.get("/themes/:theme", function (req, res) {
+app.get("/themes", function (req, res) {
     res.sendFile(__dirname + '/index.html');
-
 });
+app.get("/themes/questions/:theme", function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
+/*app.get("/themes/result", function (req, res) {
+ res.sendFile(__dirname + '/index.html');
+ });*/
+
 
 app.get("/api/questions/:theme", function (req, res) {
     var theme = req.params.theme;
-    mongoose.connect(url,{
+    mongoose.connect(url, {
         useMongoClient: true
     });
     Questions.findOne({theme: theme}, function (err, questions) {
 
         mongoose.disconnect();
-        if(err) return res.status(400).send();
+        if (err) return res.status(400).send();
 
         res.send(questions);
     });
 });
 
 app.get("/api/themes/", function (req, res) {
-    mongoose.connect(url,{
+    mongoose.connect(url, {
         useMongoClient: true
     });
     Theme.find({}, function (err, themes) {
@@ -84,15 +99,24 @@ app.get("/api/themes/", function (req, res) {
 app.get("/api/auth/:login/:password", function (req, res) {
     var login = req.params.login;
     var password = req.params.password;
-    mongoClient.connect(url, function (err, db) {
-        db.collection("users").findOne({login: login, password: password}, function (err, user) {
-            if (err) return res.status(400).send();
+    mongoose.connect(url, {
+        useMongoClient: true
+    });
+    User.find({
+        login: login,
+        password: password
+    }, function (err, user) {
+        mongoose.disconnect();
+        if (err) return res.status(400).send();
 
-            res.send(user);
-            db.close();
-        })
-    })
+        res.send(user);
+    });
 });
+
+app.post("/api/register/", function (req, res) {
+    console.log(req.body);
+    res.send(true);
+})
 
 app.listen(port, function (error) {
     if (error) {
