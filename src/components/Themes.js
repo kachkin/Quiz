@@ -8,13 +8,14 @@ import Theme from "./Theme";
 export default class Themes extends Component {
     render() {
         const {themes} = this.props;
+        const {clickTheme, getQuestions, themeParam} = this.props
         var i=1;
         return (
             <div className='Themes'>
                 <ButtonGroup vertical>
                     {
                         themes.map(theme =>
-                            <Theme key ={i++} theme={theme} clickTheme={this.props.clickTheme}/>
+                            <Theme key ={i++} theme={theme} clickTheme={clickTheme} getQuestions={getQuestions} themeParam={themeParam}/>
                         )
                     }
                 </ButtonGroup>
@@ -25,5 +26,7 @@ export default class Themes extends Component {
 
 Themes.propTypes = {
     clickTheme: PropTypes.func.isRequired,
-    themes: PropTypes.array.isRequired
+    getQuestions: PropTypes.func.isRequired,
+    themes: PropTypes.array.isRequired,
+    themeParam: PropTypes.bool.isRequired
 };
