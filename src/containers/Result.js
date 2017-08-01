@@ -1,21 +1,23 @@
 import React, {Component} from "react";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
+import ResultPage from "../components/Result";
 import * as questionsActions from "../actions/QuestionsActions";
 
 class Result extends Component{
     render(){
+        const {theme, fail, right} = this.props;
         return(
-            <div>kuku</div>
+            <ResultPage theme={theme} fail={fail} right={right}/>
         )
     }
 }
 
 function mapStateToProps(state) {
     return{
-        theme: state.theme,
-        fail: state.fail,
-        right: state.right
+        theme: state.questions.theme,
+        fail: state.questions.fail,
+        right: state.questions.right
     }
 }
 
