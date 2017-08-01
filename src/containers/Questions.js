@@ -3,20 +3,17 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import Questions from "../components/Questions";
 import * as questionsActions from "../actions/QuestionsActions";
-import "../styles/App.less";
+import "../styles/Questions.less";
 
 
 class App extends Component {
 
-   componentWillMount(){
-       this.props.questionsActions.getQuestions(this.props.params.theme)
-   }
-    /*componentDidUpdate(nextProps){
-        if(nextProps.params.theme!==this.props.theme){
-            this.props.questionsActions.getQuestions(nextProps.params.theme);
+    constructor(props) {
+        super(props);
+        if(this.props.theme.length === 0) {
+            this.props.questionsActions.getQuestions(this.props.params.theme, !this.props.params.theme);
         }
-    }*/
-
+    }
 
     render() {
         const {questions} = this.props;
@@ -29,7 +26,6 @@ class App extends Component {
 
 function mapStateToProps(state) {
     return {
-        end: state.questions.end,
         questions: state.questions.questions,
         theme: state.themes.theme
     }
