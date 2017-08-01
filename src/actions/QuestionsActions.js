@@ -10,31 +10,34 @@ import {
     CLICK_THEME
 } from "../constants/Questions";
 
-export function getQuestions(theme) {
+export function getQuestions(theme, themeParams) {
     var url = "/api/questions/" + theme;
     return (dispatch) => {
-        dispatch({
-            type: GET_QUESTIONS_REQUEST,
-            payload: {}
-        });
+            var paramsUrl=window.location.pathname.split("/");
+            if(!themeParams||(paramsUrl[paramsUrl.length-1]!==theme)) {
+                dispatch({
+                    type: GET_QUESTIONS_REQUEST,
+                    payload: {}
+                });
+                axios.get(url, theme)
+                    .then(result => {
+                        dispatch({
+                            type: GET_QUESTIONS_SUCCESS,
+                            payload: {
+                                result: result
+                            }
+                        })
+                    })
+                    .catch(error => {
+                        dispatch({
+                            type: GET_QUESTIONS_ERROR,
+                            payload: {},
+                            error: error
+                        })
+                    })
+            }
+        }
 
-        axios.get(url, theme)
-            .then(result => {
-                dispatch({
-                    type: GET_QUESTIONS_SUCCESS,
-                    payload: {
-                        result: result
-                    }
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: GET_QUESTIONS_ERROR,
-                    payload: {},
-                    error: error
-                })
-            })
-    }
 }
 
 export function clickAnswer(question, answer) {
