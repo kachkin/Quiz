@@ -3,6 +3,7 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {getThemes, clickTheme, getQuestions} from "../actions/QuestionsActions";
 import ThemesPage from "../components/Themes";
+import UserMenu from "../components/UserMenu"
 
 import "../styles/Themes.less";
 
@@ -12,10 +13,13 @@ class Themes extends Component{
         this.props.getThemes();
     }
     render(){
-        const {themes} = this.props;
+        const {themes, lastName, firstName} = this.props;
         const {getQuestions, clickTheme} = this.props;
         return(
             <div>
+                <div className='UserMenu'>
+                    <UserMenu firstName={firstName} lastName={lastName} userLogOut={getQuestions}/>
+                </div>
                 <div className='Themes'>
                     <ThemesPage clickTheme={clickTheme} getQuestions={getQuestions} themes={themes} themeParam={!!this.props.params.theme}/>
                 </div>
@@ -30,7 +34,9 @@ function mapStateToProps(state) {
         themes: state.themes.themes,
         choice: state.questions.choice,
         theme: state.themes.theme,
-        login: state.session.login
+        login: state.session.login,
+        firstName: state.session.userFirstName,
+        lastName: state.session.userLastName
     }
 }
 
