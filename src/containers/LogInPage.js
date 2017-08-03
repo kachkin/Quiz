@@ -6,14 +6,22 @@ import {userAuth} from "../actions/SessionActions";
 import {browserHistory} from "react-router"
 
 class LogInPage extends Component {
+    componentWillMount(){
+        if(this.props.login){
+            browserHistory.push("/themes");
+        }
+    }
+    componentDidUpdate(){
+        if(this.props.login){
+                browserHistory.push("themes");
+        }
+    }
     handleFormSubmit(e) {
         e.preventDefault();
         var login = e.target.elements["formHorizontalLogin"].value;
         var password = e.target.elements["formHorizontalPassword"].value;
-        if(!this.props.login){
-            document.getElementById("error-login").innerHTML="Incorrect login or password"
-        }
         this.props.userAuth(login, password);
+
     }
 
     goToRegistration() {
