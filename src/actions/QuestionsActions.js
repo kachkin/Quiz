@@ -54,7 +54,7 @@ export function clickAnswer(question, answer) {
 
 export function getThemes() {
     var url = "/api/themes/";
-    return (dispatch) => {
+    return (dispatch => {
         dispatch({
             type: GET_THEMES_REQUEST,
             payload: {}
@@ -73,7 +73,7 @@ export function getThemes() {
                 error: error
             })
         })
-    }
+    })
 
 }
 export function clickTheme(theme) {
