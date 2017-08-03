@@ -31,14 +31,14 @@ export function registerUser(user) {
 }
 
 export function userAuth(login, password) {
-    var url = "/api/auth/"+login+"/" + password;
+    var url = "/api/auth/";
 
     return (dispatch) => {
         dispatch({
             type: SESSION_AUTH_REQUEST,
             payload:{}
         });
-        axios.get(url).then(result => {
+        axios.get(url, {params:{login, password}}).then(result => {
             dispatch({
                 type: SESSION_AUTH_SUCCESS,
                 payload: {
