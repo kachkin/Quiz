@@ -36,8 +36,9 @@ var userScheme = new Schema({
     firstName: String,
     lastName: String,
     login: String,
-    password: String
-});
+    password: String,
+    teacher: Boolean
+},{versionKey: false});
 var themeScheme = new Schema({
     name: String,
     value: String
@@ -47,7 +48,7 @@ var questionScheme = new Schema({
     theme: String,
     value: String,
     questions: Array
-});
+},{versionKey: false});
 
 
 var Theme = mongoose.model("Theme", themeScheme);
@@ -96,17 +97,18 @@ app.get("/api/themes/", function (req, res) {
 
 });
 
-app.get("/api/auth/:login/:password", function (req, res) {
-    var login = req.params.login;
-    var password = req.params.password;
+app.get("/api/auth/", function (req, res) {
+    var login = req.query.login;
+    var password = req.query.password;
     mongoose.connect(url, {
         useMongoClient: true
     });
-    User.find({
+    User.findOne({
         login: login,
         password: password
     }, function (err, user) {
         mongoose.disconnect();
+
         if (err) return res.status(400).send();
 
         res.send(user);
@@ -115,8 +117,24 @@ app.get("/api/auth/:login/:password", function (req, res) {
 
 app.post("/api/register/", function (req, res) {
     console.log(req.body);
+    var user={
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        login: req.body.login,
+        password: req.body.login,
+        teacher: req.body.teacher
+    };
+    mongoose.connect(url,{
+        useMongoClient: true
+    });
+    User.create(user, function (err, user) {
+        mongoose.disconnect();
+        if(err) return console.log(err);
+
+        console.log("User save", user)
+    });
     res.send(true);
-})
+});
 
 app.listen(port, function (error) {
     if (error) {
