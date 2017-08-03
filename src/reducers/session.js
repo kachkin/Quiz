@@ -17,6 +17,9 @@ export default function session(state = initialState, action) {
                 ...state
             }
         case SESSION_AUTH_SUCCESS:
+            if(!action.payload.user.data.login){
+                document.getElementById("error-login").innerHTML="Incorrect login or password"
+            }
             return {
                 ...state,
                 userFirstName: action.payload.user.data.firstName,
